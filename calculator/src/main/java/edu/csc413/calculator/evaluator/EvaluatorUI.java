@@ -1,9 +1,13 @@
 package edu.csc413.calculator.evaluator;
 
+import edu.csc413.calculator.exceptions.InvalidTokenException;
+import edu.csc413.calculator.operators.Operator;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Stack;
 
 public class EvaluatorUI extends JFrame implements ActionListener {
 
@@ -27,10 +31,11 @@ public class EvaluatorUI extends JFrame implements ActionListener {
     public static void main(String argv[]) {
         new EvaluatorUI();
     }
+    String newExpression = "";
 
     public EvaluatorUI() {
         setLayout(new BorderLayout());
-        this.expressionTextField.setPreferredSize(new Dimension(600, 50));
+        this.expressionTextField.setPreferredSize(new Dimension(500, 50));
         this.expressionTextField.setFont(new Font("Courier", Font.BOLD, 28));
 
         add(expressionTextField, BorderLayout.NORTH);
@@ -43,7 +48,7 @@ public class EvaluatorUI extends JFrame implements ActionListener {
         Button tempButtonReference;
         for (int i = 0; i < EvaluatorUI.buttonText.length; i++) {
             tempButtonReference = new Button(buttonText[i]);
-            tempButtonReference.setFont(new Font("Courier", Font.BOLD, 28));
+            tempButtonReference.setFont(new Font("Courier", Font.BOLD, 20));
             buttons[i] = tempButtonReference;
         }
 
@@ -58,7 +63,7 @@ public class EvaluatorUI extends JFrame implements ActionListener {
         }
 
         setTitle("Calculator");
-        setSize(400, 400);
+        setSize(350, 400);
         setLocationByPlatform(true);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
@@ -71,7 +76,28 @@ public class EvaluatorUI extends JFrame implements ActionListener {
      *                    button is pressed.
      */
     public void actionPerformed(ActionEvent actionEventObject) {
+        Evaluator evaluator = new Evaluator();
+        String input = expressionTextField.getText();
 
-
+        if (actionEventObject.getSource() == buttons[19]) { //each time the user clicks "CE" the whole field is reset - works like clear all
+            expressionTextField.setText("");
+            newExpression = "";
+        }else if (actionEventObject.getSource() == buttons[18]) { //"C" functions like the delete key
+            if(!expressionTextField.getText().equals("")) //makes sure the field isn't empty before trying to delete
+                expressionTextField.setText(expressionTextField.getText().substring(0,expressionTextField.getText().length()-1)); //deletes a single char at a time
+        }else if (actionEventObject.getSource() == buttons[14]) { //the "=" sign calls the evaluateExpression() method from evaluator which we initialized above
+            try {
+                expressionTextField.setText("" + Integer.toString(evaluator.evaluateExpression(newExpression))); //does the calculation and returns the integer (no decimal functionality) as a string
+            } catch (InvalidTokenException e) {
+                e.printStackTrace();
+            }
+        }else { //for any other button - operands and operators alike
+            for (int i=0; i<buttons.length; i++){
+                if (actionEventObject.getSource() == buttons[i]) { // cycles through buttons array -> finds string which matches button press -> prints -> repeats
+                    expressionTextField.setText(input + buttonText[i]);
+                    newExpression = newExpression + buttonText[i];
+                }
+            }
+        }
     }
 }
