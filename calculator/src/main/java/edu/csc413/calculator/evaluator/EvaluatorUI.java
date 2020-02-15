@@ -31,7 +31,6 @@ public class EvaluatorUI extends JFrame implements ActionListener {
     public static void main(String argv[]) {
         new EvaluatorUI();
     }
-    String newExpression = "";
 
     public EvaluatorUI() {
         setLayout(new BorderLayout());
@@ -69,6 +68,9 @@ public class EvaluatorUI extends JFrame implements ActionListener {
         setVisible(true);
     }
 
+    Evaluator evaluator = new Evaluator(); //needed so we can call the evaluateExpression() method when user enters "="
+    String input = "";
+
     /**
      * This function is triggered anytime a button is pressed
      * on our Calculator GUI.
@@ -76,18 +78,16 @@ public class EvaluatorUI extends JFrame implements ActionListener {
      *                    button is pressed.
      */
     public void actionPerformed(ActionEvent actionEventObject) {
-        Evaluator evaluator = new Evaluator();
-        String input = expressionTextField.getText();
+        input = expressionTextField.getText(); //input is updated on each button click
 
-        if (actionEventObject.getSource() == buttons[19]) { //each time the user clicks "CE" the whole field is reset - works like clear all
+        if (actionEventObject.getSource() == buttons[18]) { //each time the user clicks "C" the whole field is reset - works like clear all
             expressionTextField.setText("");
-            newExpression = "";
-        }else if (actionEventObject.getSource() == buttons[18]) { //"C" functions like the delete key
+        }else if (actionEventObject.getSource() == buttons[19]) { //"CE" functions like the delete key
             if(!expressionTextField.getText().equals("")) //makes sure the field isn't empty before trying to delete
                 expressionTextField.setText(expressionTextField.getText().substring(0,expressionTextField.getText().length()-1)); //deletes a single char at a time
         }else if (actionEventObject.getSource() == buttons[14]) { //the "=" sign calls the evaluateExpression() method from evaluator which we initialized above
             try {
-                expressionTextField.setText("" + Integer.toString(evaluator.evaluateExpression(newExpression))); //does the calculation and returns the integer (no decimal functionality) as a string
+                expressionTextField.setText("" + Integer.toString(evaluator.evaluateExpression(input))); //does the calculation and returns the integer (no decimal functionality) as a string
             } catch (InvalidTokenException e) {
                 e.printStackTrace();
             }
@@ -95,7 +95,6 @@ public class EvaluatorUI extends JFrame implements ActionListener {
             for (int i=0; i<buttons.length; i++){
                 if (actionEventObject.getSource() == buttons[i]) { // cycles through buttons array -> finds string which matches button press -> prints -> repeats
                     expressionTextField.setText(input + buttonText[i]);
-                    newExpression = newExpression + buttonText[i];
                 }
             }
         }
