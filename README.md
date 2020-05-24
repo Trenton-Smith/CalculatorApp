@@ -2,10 +2,6 @@
 
 ## Student Name  : Trenton Smith
 
-## Student ID    : 920056368
-
-## Student Email : tsmith18@mail.sfsu.edu
-
 ### Note failure to completely fill out this README.md could cause you to recieve a  0 for your project until correctly done
 
 # Adding the JUnit 5 Jars to your project.
